@@ -2,7 +2,7 @@ import { http, HttpResponse } from 'msw';
 import type { Transaction, NewTransaction } from '@/types/transaction';
 
 // In-memory data store with sample transactions
-let transactions: Transaction[] = [
+const transactions: Transaction[] = [
   {
     id: '1',
     amount: 5000,
@@ -79,7 +79,7 @@ export const handlers = [
     if (index === -1) {
       return HttpResponse.json(
         { error: 'Transaction not found' },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -95,7 +95,7 @@ export const handlers = [
     if (index === -1) {
       return HttpResponse.json(
         { error: 'Transaction not found' },
-        { status: 404 }
+        { status: 404 },
       );
     }
 

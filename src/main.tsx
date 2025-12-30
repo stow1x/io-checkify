@@ -37,6 +37,6 @@ enableMocking().then(() => {
         <App />
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
-    </StrictMode>
+    </StrictMode>,
   );
 });
