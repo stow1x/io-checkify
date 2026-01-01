@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs/Tabs';
 import { TransactionForm } from '@/components/TransactionForm';
 import { TransactionTable } from '@/components/TransactionTable';
 import { TransactionChart } from '@/components/TransactionChart';
@@ -18,11 +18,11 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-white">
       <header className="border-b">
         <div className="container mx-auto px-4 py-6">
           <h1 className="text-3xl font-bold">Income/Outcome Notes</h1>
-          <p className="text-muted-foreground mt-2">Track your financial transactions</p>
+          <p className="text-gray-600 mt-2">Track your financial transactions</p>
         </div>
       </header>
 

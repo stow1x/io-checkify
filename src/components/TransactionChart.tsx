@@ -1,6 +1,6 @@
 import { useTransactions } from '@/hooks/useTransactions';
 import type { TransactionType } from '@/types/transaction';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card/Card';
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Loader2 } from 'lucide-react';
 

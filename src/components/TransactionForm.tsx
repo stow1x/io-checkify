@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useCreateTransaction, useUpdateTransaction } from '@/hooks/useTransactions';
 import type { Transaction, TransactionType } from '@/types/transaction';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card/Card';
+import { Input } from '@/components/ui/input/Input';
+import { Label } from '@/components/ui/label/Label';
+import { Button } from '@/components/ui/button/Button';
 
 interface TransactionFormProps {
   type: TransactionType;
@@ -137,7 +137,7 @@ export function TransactionForm({ type, editingTransaction, onEditComplete }: Tr
             <Button
               type="submit"
               variant={type === 'outcome' ? 'destructive' : 'default'}
-              disabled={createMutation.isPending || updateMutation.isPending}
+              isDisabled={createMutation.isPending || updateMutation.isPending}
               className="flex-1"
             >
               {editingTransaction ? 'Update' : 'Add'} {type === 'income' ? 'Income' : 'Outcome'}
