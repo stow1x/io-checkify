@@ -1,8 +1,8 @@
 import { useTransactions } from '@/hooks/useTransactions';
 import type { TransactionType } from '@/types/transaction';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card/Card';
+import { Card, CardHeader, CardBody, Spinner } from '@heroui/react';
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { Loader2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface TransactionChartProps {
   type: TransactionType;
@@ -11,14 +11,15 @@ interface TransactionChartProps {
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D', '#FFC658'];
 
 export function TransactionChart({ type }: TransactionChartProps) {
+  const { t } = useTranslation();
   const { data: transactions, isLoading, error } = useTransactions(type);
 
   if (isLoading) {
     return (
       <Card>
-        <CardContent className="flex items-center justify-center p-8">
-          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-        </CardContent>
+        <CardBody className="flex items-center justify-center p-8">
+          <Spinner size="lg" />
+        </CardBody>
       </Card>
     );
   }
@@ -26,9 +27,9 @@ export function TransactionChart({ type }: TransactionChartProps) {
   if (error) {
     return (
       <Card>
-        <CardContent className="p-8">
-          <p className="text-center text-destructive">Failed to load chart data</p>
-        </CardContent>
+        <CardBody className="p-8">
+          <p className="text-center text-destructive">{t('failedToLoad')}</p>
+        </CardBody>
       </Card>
     );
   }
@@ -37,13 +38,13 @@ export function TransactionChart({ type }: TransactionChartProps) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Category Distribution</CardTitle>
+          <h3 className="text-lg font-semibold">{t('categoryDistribution')}</h3>
         </CardHeader>
-        <CardContent>
+        <CardBody>
           <p className="text-center text-muted-foreground py-8">
-            No data to display. Add some transactions first.
+            {t('noData')}
           </p>
-        </CardContent>
+        </CardBody>
       </Card>
     );
   }
@@ -75,9 +76,9 @@ export function TransactionChart({ type }: TransactionChartProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Category Distribution</CardTitle>
+        <h3 className="text-lg font-semibold">{t('categoryDistribution')}</h3>
       </CardHeader>
-      <CardContent>
+      <CardBody>
         <ResponsiveContainer width="100%" height={300}>
           <PieChart>
             <Pie
@@ -102,12 +103,12 @@ export function TransactionChart({ type }: TransactionChartProps) {
           </PieChart>
         </ResponsiveContainer>
         <div className="mt-4 text-center">
-          <p className="text-sm text-muted-foreground">Total</p>
+          <p className="text-sm text-muted-foreground">{t('total')}</p>
           <p className={`text-2xl font-bold ${type === 'income' ? 'text-green-600' : 'text-red-600'}`}>
             ${total.toFixed(2)}
           </p>
         </div>
-      </CardContent>
+      </CardBody>
     </Card>
   );
 }

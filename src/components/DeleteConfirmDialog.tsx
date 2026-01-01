@@ -1,14 +1,6 @@
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog/AlertDialog';
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure } from '@heroui/react';
+import { cloneElement, isValidElement } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface DeleteConfirmDialogProps {
   onConfirm: () => void;
@@ -16,23 +8,39 @@ interface DeleteConfirmDialogProps {
 }
 
 export function DeleteConfirmDialog({ onConfirm, triggerButton }: DeleteConfirmDialogProps) {
+  const { t } = useTranslation();
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+  const handleConfirm = () => {
+    onConfirm();
+    onOpenChange();
+  };
+
   return (
-    <AlertDialog>
-      <AlertDialogTrigger>{triggerButton}</AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-          <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete this transaction.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={onConfirm}>
-            Delete
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+    <>
+      {isValidElement(triggerButton) ? cloneElement(triggerButton, { onClick: onOpen } as any) : triggerButton}
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                {t('deleteConfirmTitle')}
+              </ModalHeader>
+              <ModalBody>
+                <p>{t('deleteConfirmMessage')}</p>
+              </ModalBody>
+              <ModalFooter>
+                <Button color="default" variant="light" onPress={onClose}>
+                  {t('cancel')}
+                </Button>
+                <Button color="danger" onPress={handleConfirm}>
+                  {t('delete')}
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+    </>
   );
 }

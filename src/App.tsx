@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs/Tabs';
+import { Tabs, Tab } from '@heroui/react';
 import { TransactionForm } from '@/components/TransactionForm';
 import { TransactionTable } from '@/components/TransactionTable';
 import { TransactionChart } from '@/components/TransactionChart';
@@ -27,14 +27,13 @@ function App() {
       </header>
 
       <main className="container mx-auto px-4 py-8">
-        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as TransactionType)}>
-          <TabsList className="mb-8">
-            <TabsTrigger value="income">Income</TabsTrigger>
-            <TabsTrigger value="outcome">Outcome</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="income">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <Tabs 
+          selectedKey={activeTab} 
+          onSelectionChange={(key) => setActiveTab(key as TransactionType)}
+          className="mb-8"
+        >
+          <Tab key="income" title="Income">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
               <div className="lg:col-span-2 space-y-6">
                 <TransactionForm
                   type="income"
@@ -47,10 +46,10 @@ function App() {
                 <TransactionChart type="income" />
               </div>
             </div>
-          </TabsContent>
+          </Tab>
 
-          <TabsContent value="outcome">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <Tab key="outcome" title="Outcome">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
               <div className="lg:col-span-2 space-y-6">
                 <TransactionForm
                   type="outcome"
@@ -63,7 +62,7 @@ function App() {
                 <TransactionChart type="outcome" />
               </div>
             </div>
-          </TabsContent>
+          </Tab>
         </Tabs>
       </main>
     </div>

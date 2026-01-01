@@ -1,17 +1,9 @@
 import { useTransactions, useDeleteTransaction } from '@/hooks/useTransactions';
 import type { Transaction, TransactionType } from '@/types/transaction';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table/Table';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card/Card';
-import { Button } from '@/components/ui/button/Button';
-import { Loader2, Edit, Trash2 } from 'lucide-react';
+import { Card, CardHeader, CardBody, Button, Spinner } from '@heroui/react';
+import { Edit, Trash2 } from 'lucide-react';
 import { DeleteConfirmDialog } from './DeleteConfirmDialog';
+import { useTranslation } from 'react-i18next';
 
 interface TransactionTableProps {
   type: TransactionType;
@@ -19,6 +11,7 @@ interface TransactionTableProps {
 }
 
 export function TransactionTable({ type, onEdit }: TransactionTableProps) {
+  const { t } = useTranslation();
   const { data: transactions, isLoading, error, refetch } = useTransactions(type);
   const deleteMutation = useDeleteTransaction();
 
@@ -29,9 +22,9 @@ export function TransactionTable({ type, onEdit }: TransactionTableProps) {
   if (isLoading) {
     return (
       <Card>
-        <CardContent className="flex items-center justify-center p-8">
-          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-        </CardContent>
+        <CardBody className="flex items-center justify-center p-8">
+          <Spinner size="lg" />
+        </CardBody>
       </Card>
     );
   }
@@ -39,14 +32,14 @@ export function TransactionTable({ type, onEdit }: TransactionTableProps) {
   if (error) {
     return (
       <Card>
-        <CardContent className="p-8">
+        <CardBody className="p-8">
           <div className="text-center space-y-4">
-            <p className="text-destructive">Failed to load transactions</p>
-            <Button onClick={() => refetch()} variant="outline">
+            <p className="text-destructive">{t('failedToLoad')}</p>
+            <Button onClick={() => refetch()} variant="bordered">
               Retry
             </Button>
           </div>
-        </CardContent>
+        </CardBody>
       </Card>
     );
   }
@@ -55,13 +48,13 @@ export function TransactionTable({ type, onEdit }: TransactionTableProps) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Transactions</CardTitle>
+          <h3 className="text-lg font-semibold">{t('transactions')}</h3>
         </CardHeader>
-        <CardContent>
+        <CardBody>
           <p className="text-center text-muted-foreground py-8">
-            No {type === 'income' ? 'income' : 'outcome'} transactions yet. Add one to get started!
+            {t('noData')}
           </p>
-        </CardContent>
+        </CardBody>
       </Card>
     );
   }
@@ -69,61 +62,63 @@ export function TransactionTable({ type, onEdit }: TransactionTableProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Transactions</CardTitle>
+        <h3 className="text-lg font-semibold">{t('transactions')}</h3>
       </CardHeader>
-      <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Date</TableHead>
-              <TableHead>Category</TableHead>
-              <TableHead>Description</TableHead>
-              <TableHead className="text-right">Amount</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {transactions.map((transaction) => (
-              <TableRow key={transaction.id}>
-                <TableCell>{new Date(transaction.date).toLocaleDateString()}</TableCell>
-                <TableCell>{transaction.category}</TableCell>
-                <TableCell>{transaction.description || '-'}</TableCell>
-                <TableCell
-                  className={`text-right font-medium ${
+      <CardBody>
+        <div className="w-full overflow-auto">
+          <table className="w-full caption-bottom text-sm">
+            <thead className="[&_tr]:border-b">
+              <tr className="border-b transition-colors hover:bg-muted/50">
+                <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Date</th>
+                <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Category</th>
+                <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">Description</th>
+                <th className="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Amount</th>
+                <th className="h-12 px-4 text-right align-middle font-medium text-muted-foreground">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="[&_tr:last-child]:border-0">
+              {transactions.map((transaction) => (
+                <tr key={transaction.id} className="border-b transition-colors hover:bg-muted/50">
+                  <td className="p-4 align-middle">{new Date(transaction.date).toLocaleDateString()}</td>
+                  <td className="p-4 align-middle">{transaction.category}</td>
+                  <td className="p-4 align-middle">{transaction.description || '-'}</td>
+                  <td className={`p-4 align-middle text-right font-medium ${
                     type === 'income' ? 'text-green-600' : 'text-red-600'
-                  }`}
-                >
-                  ${transaction.amount.toFixed(2)}
-                </TableCell>
-                <TableCell className="text-right">
-                  <div className="flex justify-end gap-2">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => onEdit(transaction)}
-                      aria-label={`Edit ${transaction.category} transaction`}
-                    >
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                    <DeleteConfirmDialog
-                      onConfirm={() => handleDeleteConfirm(transaction.id)}
-                      triggerButton={
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          aria-label={`Delete ${transaction.category} transaction`}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      }
-                    />
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </CardContent>
+                  }`}>
+                    ${transaction.amount.toFixed(2)}
+                  </td>
+                  <td className="p-4 align-middle text-right">
+                    <div className="flex justify-end gap-2">
+                      <Button
+                        variant="light"
+                        isIconOnly
+                        size="sm"
+                        onPress={() => onEdit(transaction)}
+                        aria-label={`Edit ${transaction.category} transaction`}
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <DeleteConfirmDialog
+                        onConfirm={() => handleDeleteConfirm(transaction.id)}
+                        triggerButton={
+                          <Button
+                            variant="light"
+                            isIconOnly
+                            size="sm"
+                            aria-label={`Delete ${transaction.category} transaction`}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        }
+                      />
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </CardBody>
     </Card>
   );
 }
