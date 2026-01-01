@@ -1,16 +1,2 @@
-/* Tailwind CSS v4 - Must be first */
 @import "tailwindcss";
-
-/* HeroUI v3 styles - Must be after Tailwind */
 @import "@heroui/styles";
-
-/* Custom theme overrides */
-:root {
-  --radius: 0.5rem;
-}
-
-/* Dark mode overrides */
-[data-theme="dark"],
-.dark {
-  /* Add dark mode customizations here */
-}
